@@ -1,0 +1,78 @@
+﻿<Graph ClassName="ReviewGraphExtensions" Source="#CDATA" IsNew="True" FileType="NewGraph">
+    <CDATA name="Source"><![CDATA[using System;
+using PX.Data;
+using PX.Objects;
+using PX.Objects.SO;
+using PX.Common;
+using System.Reflection;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace ReviewExtensions
+{
+    public class ReviewGraphExtensions : PXGraph<ReviewGraphExtensions>
+    {
+
+        public PXSave<MasterTable> Save;
+        public PXCancel<MasterTable> Cancel;
+
+
+        public PXFilter<MasterTable> MasterView;
+        public PXFilter<DetailsTable> DetailsView;
+
+        public IEnumerable detailsView()
+        {
+            if (MasterView.Current != null && !String.IsNullOrEmpty(MasterView.Current.GraphName))
+            {
+                PXGraph graph = null;
+                try
+                {
+                    Type graphType = Assembly.GetAssembly(typeof(SOShipmentEntry)).GetType(MasterView.Current.GraphName); 
+
+                    // Acuminator disable once PX1084 GraphCreationInDataViewDelegate [It's ok if you relally need it and understand the consequences]
+                    graph = PXGraph.CreateInstance(graphType);
+
+                }
+                catch { }
+                if (graph != null)
+                {
+                    PXGraphExtension[] extensions = graph.GetType().GetProperty("GraphExtensions", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(graph) as PXGraphExtension[];
+                    foreach (PXGraphExtension ext in extensions)
+                    {
+                        yield return new DetailsTable() { GraphExtensionName = ext.GetType().FullName, AssemblyName = ext.GetType().Assembly.FullName };
+                    }
+                }
+            }
+        }
+
+        [Serializable]
+        public class MasterTable : IBqlTable
+        {
+            public new abstract class graphName : PX.Data.BQL.BqlString.Field<graphName> { }
+            [PXString(4000, IsKey = true)]
+            [PXDefault("PX.Objects.SO.SOShipmentEntry")]
+            [PXUIField(DisplayName = "Graph Name")]
+            public virtual string GraphName { get; set; }
+
+        }
+
+
+        [Serializable]
+        public class DetailsTable : IBqlTable
+        {
+            public new abstract class graphExtensionName : PX.Data.BQL.BqlString.Field<graphExtensionName> { }
+            [PXString(4000, IsKey = true)]
+            [PXUIField(DisplayName = "Graph Extension Name" )]
+            public virtual string GraphExtensionName { get; set; }
+
+
+            public new abstract class assemblyName : PX.Data.BQL.BqlString.Field<assemblyName> { }
+            [PXString(4000)]
+            [PXUIField(DisplayName = "Assembly Name")]
+            public virtual string AssemblyName { get; set; }
+
+        }
+
+    }
+}]]></CDATA>
+</Graph>
