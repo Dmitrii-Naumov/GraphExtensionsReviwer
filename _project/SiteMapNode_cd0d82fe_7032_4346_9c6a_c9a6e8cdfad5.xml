@@ -25,7 +25,9 @@
         </layout>
         <data>
             <SiteMap>
-                <row Position="21516" Title="REview Graph Extensions" Url="~/Pages/SM/SM209897.aspx" ScreenID="SM209897" NodeID="cd0d82fe-7032-4346-9c6a-c9a6e8cdfad5" ParentID="00000000-0000-0000-0000-000000000000" />
+                <row Position="21516" Title="Review Graph and Cache Extensions" Url="~/Pages/SM/SM209897.aspx" ScreenID="SM209897" NodeID="cd0d82fe-7032-4346-9c6a-c9a6e8cdfad5" ParentID="00000000-0000-0000-0000-000000000000">
+                    <MUIScreen IsPortal="0" WorkspaceID="00000000-0000-0000-0000-000000000000" Order="1030" SubcategoryID="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" />
+                </row>
             </SiteMap>
         </data>
     </data-set>
